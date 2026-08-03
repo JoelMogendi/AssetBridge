@@ -1,65 +1,146 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  Building2,
+  Handshake,
+  ShieldCheck,
+  Wallet,
+  ArrowRight,
+  TrendingUp,
+  Tractor,
+  Section,
+} from "lucide-react";
 
-export default function Home() {
+export const metadata = {
+  title: "Investor Marketplace | Buy & Sell High-Value Assets",
+  description: "The premier platform for investors to acquire businesses, real estate plots, manufacturing plants and agricultural assets.",
+};
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <div className="mb-4 bg-gray-50 w-16 h-16 rounded-lg flex items-center justify-center">
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
   );
-}
+};
+
+function StepCard({ number, title, description }: { number: string, title: string, description: string }) {
+  return (
+    <div className="relative p-6">
+      <div className="text-5xl font-extrabold text-gray-100  absolute top-0 left-0 -z-10">
+        {number}
+      </div>
+      <h3 className="text-2xl font-bold text-gray-900 mb-3 mt-4">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </div>
+  );
+};
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Hero section */}
+      <section className="relative bg-gray-900 text-white py-24 sm:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-center opacity-10"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+            Invest in Verified <span className="text-blue-500">Businesses & Assets</span>
+          </h1>
+          <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-300 mb-10">
+            A secure marketplace connecting serious invetors with profitable businesses, joint venture real estate, manufacturing plants and high-yield farms.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Link
+            href="/businesses"
+            className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center">
+              Explore Assets
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+            <Link
+            href="/register"
+            className="w-full sm:w-auto px-8 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg border border-gray-700 transition-colors flex items-center justify-center"
+            >
+              Join as a Seller
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Asset Categories */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900">What you can Invest In</h2>
+            <p className="mt-4 text-gray-600">Diversify your portfolio across multiple high-yield sectors.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <FeatureCard
+              icon={<Building2 className="h-8 w-8 text-blue-600" />}
+              title="Businesses for Sale"
+              description="Acquire established, cash-flowing businesses across various industries."
+            />
+            <FeatureCard
+              icon={<Handshake className="h-8 w-8 text-green-600" />}
+              title="Real Estate Joint Ventures"
+              description="Partner with developers to construct apartments and share investment gains."
+            />
+            <FeatureCard
+              icon={<Tractor className="h-8 w-8 text-yellow-600" />}
+              title="Farm and Agriculture"
+              description="Buy or lease agricultural land, complete with existing crops and livestock."
+            />
+            <FeatureCard
+              icon={<TrendingUp className="h-8 w-8 text-purple-600" />}
+              title="Manufacturing"
+              description="Take over operational industrial plants and manufacturing facilities."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How it Works */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900">A secure way to Transact</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <StepCard
+            number="01"
+            title="Discovery & Verify"
+            description="Browse detailed financial  metrics and asset description. If you don't want, post a custom request to our seller network." 
+            />
+            <StepCard
+            number="02"
+            title="Secure Connection Fee"
+            description="To eliminate spam and ensure  serious inquiries , buyers pay a small, secure escrow fee  via Mobile Money to unlock seller contact details." 
+            />
+            <StepCard
+            number="03"
+            title="Negotiate & CTA"
+            description="Communicate directly with the seller. Need help closing? Browse our directory of vetted legal and financial professionals to hire." 
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 bg-blue-600 text-white text-center">
+        <div className="max-w-3xl mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-6">Ready to expand your portfolio?</h2>
+          <p className="text-blue-100 mb-8 text-lg">
+            Join a network of serious investors and business owner today.
+          </p>
+          <Link 
+          href="/register"
+          className="px-8 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-gray-100 transition-colors inline-block"
+          >Create Your Free Account</Link>
+        </div>
+      </section>
+    </div>
+  );
+};

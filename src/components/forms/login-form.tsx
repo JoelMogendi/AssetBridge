@@ -52,8 +52,17 @@ export default function LoginForm() {
                 setGlobalError(result.error);
             } else if(result?.ok) {
                 // successfull, redirect user to dashboard
-                router.push("/");
                 router.refresh();
+                
+                fetch("/api/auth/session")
+                  .then(res => res.json())
+                  .then(sessionData => {
+                    if(sessionData?.user?.role === "seller") {
+                        router.push("seller");
+                    } else {
+                        router.push("buyer");
+                    }
+                  })
             }
         } catch (error) {
             setGlobalError("An unexpected error occurred. Please try again.");

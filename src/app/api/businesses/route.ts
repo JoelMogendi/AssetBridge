@@ -60,7 +60,7 @@ export async function POST(req: Request) {
         const { title, description, price, location, industry } = body;
 
         // validation
-        if(!title || !description || !price || location || !industry ) {
+        if(!title || !description || !price || !location || !industry ) {
             return NextResponse.json({ error: "All fields are required"}, { status: 400 });
         };
 

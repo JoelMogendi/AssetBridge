@@ -5,7 +5,6 @@ import Business from "@/models/Business";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
 import { auth } from "@/auth";
-import { error } from "console";
 
 // Fetch business with filters 
 export async function GET(

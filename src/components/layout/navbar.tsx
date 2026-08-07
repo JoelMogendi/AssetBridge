@@ -1,25 +1,21 @@
-import Link from "next/link";
-import { auth, signOut } from "@/auth";
-import { Briefcase, User as UserIcon, LogOut, LayoutDashboard  } from "lucide-react";
+import { auth } from "@/auth";
+import BuyerNavbar from "./buyer-navbar";
+import SellerNavbar from "./seller-navbar";
+import PublicNavbar from "./public-navbar";
 
-export default async function Navbar() {
-    // fetch session
+export default async function Navbar () {
     const session = await auth();
 
-    return (
-        <nav className="sticky top-0 z-50 w-full bg-white border border-gray-100 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
+    // if no user is logged in
+    if(!session?.user) {
+        return <PublicNavbar />;
+    };
 
-                    {/* primary nav */}
-                    <div className="flex items-center gap-8">
-                        <Link href="/" className="flex items-center gap-2">
-                            <Briefcase className="h-6 w-6 text-blue-600" />
-                            <span className=""></span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    );
+    // route to specific dashboard
+    if(session.user.role === "seller") {
+        return <SellerNavbar user={session.user} />;
+    };
+
+    // Default buyer
+    return <BuyerNavbar user={session.user} />;
 };

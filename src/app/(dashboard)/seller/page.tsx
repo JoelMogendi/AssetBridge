@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { connectDB } from "@/lib/db";
 import  Business  from "@/models/Business";
+import Transaction from "@/models/Transaction";
 import { PlusCircle, Building2, TrendingUp, Users } from "lucide-react";
 
 export const metadata = {
@@ -25,18 +26,37 @@ function StatCard({ icon, title, value, subtitle }: { icon: React.ReactNode; tit
     );
 };
 
-export default async function sellerDashboard() {
+export default async function SellerDashboard() {
     const session = await auth();
 
     // authorization guard 
     if(!session?.user) redirect("/login");
-    if(session.user.role !== "seller") redirect("buyer");
+    if(session.user.role !== "seller") redirect("/buyer");
 
     // connect to db
     // fetch seller listings 
     await connectDB();
     const listings = await Business.find({ sellerId: session.user.id }).lean();
 
+    const businessIds = listings.map((listing) => listing._id);
+
+    const unlocks = await Transaction.find({
+        businessId: { $in: businessIds },
+        status: "completed",
+    }).lean();
+
+    const totalInquiries = unlocks.length;
+
+    const listingsWithStats = listings.map((listing) => {
+        const listingUnlocks = unlocks.filter(
+            (tx) => tx.businessId.toString() === listing._id.toString()
+        ).length;
+
+        return {
+            ...listing,
+            unlockCount: listingUnlocks,
+        };
+    });
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6  lg:px-8 py-8">
@@ -58,8 +78,8 @@ export default async function sellerDashboard() {
             {/* stats overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <StatCard icon={<Building2 />} title="Active Listings" value={listings.length.toString()} />
-                <StatCard icon={<Users />} title="Total inquiries" value="0" subtitle="Pending feature" />
-                <StatCard icon={<TrendingUp />} title="Profile views" value="0" subtitle="Pending feature" />
+                <StatCard icon={<Users />} title="Total inquiries" value={totalInquiries.toString()} subtitle="Investors who viewed your contact details" />
+                <StatCard icon={<TrendingUp />} title="Profile views" value="verified" subtitle="Your account is active and visible" />
             </div>
 
             {/* Listing section */}
@@ -67,37 +87,38 @@ export default async function sellerDashboard() {
                 <div className="px-6 py-5 border-b  border-gray-100">
                     <h2 className="text-lg font-bold text-gray-900">Your Listings</h2>
                 </div>
-            </div>
+            
 
-            <div className="p-6">
-                {listings.length === 0 ? (
-                    <div className="text-center py-12">
-                        <Building2 className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No businesses listed yet</h3>
-                        <p className="text-gray-500 mb-6">List your first business or asset to start receiving inquiries from investors.</p>
-                        <Link href="/seller/new" className="text-blue-600 font-medium hover:underline">
-                            Create a listing
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {listings.map((listing) => (
-                            <div className="border border-gray-200 rounded-lg p-4" key={listing._id.toString()}>
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">
-                                        {listing.status.toUpperCase()}
-                                    </span>
-                                    <span className="text-sm font-bold text-gray-900">${listing.price.toLocaleString()}</span>
+                <div className="p-6">
+                    {listingsWithStats.length === 0 ? (
+                        <div className="text-center py-12">
+                            <Building2 className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                            <h3 className="text-lg font-medium text-gray-900">No businesses listed yet</h3>
+                            <p className="text-gray-500 mb-6">List your first business or asset to start receiving inquiries from investors.</p>
+                            <Link href="/seller/new" className="text-blue-600 font-medium hover:underline">
+                                Create a listing
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {listingsWithStats.map((listing) => (
+                                <div className="border border-gray-200 rounded-lg p-4" key={listing._id.toString()}>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">
+                                            {listing.status.toUpperCase()}
+                                        </span>
+                                        <span className="text-sm font-bold text-gray-900">${listing.price.toLocaleString()}</span>
+                                    </div>
+                                    <h3 className="font-bold text-gray-900 truncate">{listing.title}</h3>
+                                    <p className="text-sm text-gray-500 mb-4">{listing.location}</p>
+                                    <Link href={`/businesses/${listing._id.toString()}`} className="text-sm text-blue-600 hover:underline">
+                                        View Listing
+                                    </Link>
                                 </div>
-                                <h3 className="font-bold text-gray-900 truncate">{listing.title}</h3>
-                                <p className="text-sm text-gray-500 mb-4">{listing.location}</p>
-                                <Link href={`/businesses/${listing._id.toString()}`} className="text-sm text-blue-600 hover:underline">
-                                    View Listing
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

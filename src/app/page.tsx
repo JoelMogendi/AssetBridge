@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import {
   Building2,
   Handshake,
@@ -39,7 +41,19 @@ function StepCard({ number, title, description }: { number: string, title: strin
   );
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+
+  const session = await auth();
+
+  // user logs in
+  if(session?.user) {
+    if(session.user.role === "seller") {
+      redirect("/seller");
+    } else {
+      redirect("/buyer");
+    };
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero section */}
